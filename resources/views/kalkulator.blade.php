@@ -68,6 +68,41 @@
         </div>
     </div>
 
+    {{-- Form Input Interaktif --}}
+    <div class="card animate-in animate-in-delay-2" style="margin-bottom: 2rem;">
+        <div class="section-label">Input Interaktif</div>
+        <h2 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Ketik Nilai IP Anda Sendiri</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+            Masukkan nilai IP untuk Semester 1 dan Semester 2 (rentang 0.00 &ndash; 4.00). Ketika tombol ditekan, sistem otomatis mengarahkan ke rute Laravel <code>/hitung-ipk/{ip1}/{ip2}</code>.
+        </p>
+
+        <form id="form-kalkulator" onsubmit="hitungManual(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: 1rem; align-items: end;">
+            <div>
+                <label for="input-ip1" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem;">
+                    IP Semester 1:
+                </label>
+                <input type="number" id="input-ip1" step="0.01" min="0" max="4" value="{{ $ip1 }}" required
+                       style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 1rem; font-family: 'Space Grotesk', sans-serif;"
+                       placeholder="Contoh: 3.50">
+            </div>
+
+            <div>
+                <label for="input-ip2" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem;">
+                    IP Semester 2:
+                </label>
+                <input type="number" id="input-ip2" step="0.01" min="0" max="4" value="{{ $ip2 }}" required
+                       style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 1rem; font-family: 'Space Grotesk', sans-serif;"
+                       placeholder="Contoh: 3.75">
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary" id="btn-hitung-manual" style="height: 48px; padding: 0 1.75rem; white-space: nowrap; width: 100%;">
+                    ⚡ Hitung Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
+
     {{-- Try Other Values --}}
     <div class="card animate-in animate-in-delay-3" style="margin-bottom: 2rem;">
         <div class="section-label">Coba Sendiri</div>
@@ -107,3 +142,28 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function hitungManual(e) {
+    e.preventDefault();
+    const ip1Raw = document.getElementById('input-ip1').value;
+    const ip2Raw = document.getElementById('input-ip2').value;
+    const ip1 = parseFloat(ip1Raw);
+    const ip2 = parseFloat(ip2Raw);
+
+    if (isNaN(ip1) || isNaN(ip2)) {
+        alert('Mohon masukkan angka IP yang valid.');
+        return;
+    }
+
+    if (ip1 < 0 || ip1 > 4 || ip2 < 0 || ip2 > 4) {
+        alert('Nilai IP harus berada dalam rentang 0.00 sampai 4.00.');
+        return;
+    }
+
+    // Arahkan ke rute Laravel: /hitung-ipk/{ip1}/{ip2}
+    window.location.href = "{{ url('/hitung-ipk') }}/" + encodeURIComponent(ip1) + "/" + encodeURIComponent(ip2);
+}
+</script>
+@endpush

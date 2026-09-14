@@ -171,6 +171,8 @@ Route::get('/agent/{tema?}', function (string $tema = 'General Assistant Agent')
    GET /hitung-ipk/{ip1}/{ip2}
    Named route: 'hitung.ipk'
    ====================================================================== */
+Route::redirect('/hitung-ipk', '/hitung-ipk/3.50/3.75');
+
 Route::get('/hitung-ipk/{ip1}/{ip2}', function (float $ip1, float $ip2) {
     $jumlah   = $ip1 + $ip2;
     $rataRata = round($jumlah / 2, 2);
